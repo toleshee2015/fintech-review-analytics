@@ -5,7 +5,5 @@ scikit-learn
 transformers
 torch
 spacy
-nltk
-sqlalchemy
 psycopg2-binary
-pytest>=7.0
+sqlalchemy
