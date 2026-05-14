@@ -62,6 +62,31 @@ The dataset was cleaned using the following steps:
 
 ---Date_range---
 01/10/2024-12/05/2026
+## 🗄️ Database Schema (schema.sql)
+
+This project uses PostgreSQL for storing cleaned banking review data.
+
+### Schema File
+The database structure is defined in:
+
+### Tables Created
+
+#### 1. banks
+Stores bank metadata:
+- bank_id (Primary Key)
+- bank_name (Unique)
+
+#### 2. reviews
+Stores customer reviews:
+- review_id (Primary Key)
+- bank_id (Foreign Key → banks)
+- review_text
+- rating (1–5)
+- review_date
+- sentiment_label
+- sentiment_score
+- identified_theme
+- language
 
 #################
 ## 🏗️ Project Structure
