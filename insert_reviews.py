@@ -1,5 +1,6 @@
 import psycopg2
 import pandas as pd
+from textblob import TextBlob
 
 # -----------------------------
 # DB CONFIG
@@ -22,34 +23,40 @@ FILES = [
 ]
 
 # -----------------------------
-# BANK MAPPING 
-# (Matches the logic in your CSV and DB IDs)
+# BANK MAP
 # -----------------------------
-def get_bank_id(bank_name):
-    name = str(bank_name).lower()
-    if 'commercial' in name or 'cbe' in name:
-        return 1
-    elif 'abyssinia' in name or 'boa' in name:
-        return 2
-    elif 'dashen' in name:
-        return 3
-    return None
+BANK_MAP = {
+    "cbe": 1,
+    "boa": 2,
+    "dashen": 3
+}
 
 # -----------------------------
-# INSERT QUERY (Updated to table 'reviews3')
+# SENTIMENT FUNCTION
+# -----------------------------
+def get_sentiment(text):
+    score = TextBlob(str(text)).sentiment.polarity
+
+    if score > 0:
+        return "positive", score
+    elif score < 0:
+        return "negative", score
+    else:
+        return "neutral", score
+
+# -----------------------------
+# INSERT QUERY
 # -----------------------------
 INSERT_QUERY = """
-INSERT INTO reviews3 (
+INSERT INTO reviews (
     bank_id,
     review_text,
     rating,
     review_date,
     sentiment_label,
-    sentiment_score,
-    identified_theme,
-    language
+    sentiment_score
 )
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+VALUES (%s, %s, %s, %s, %s, %s)
 """
 
 # -----------------------------
@@ -62,49 +69,42 @@ total = 0
 
 try:
     for file_path in FILES:
-        print(f"Loading {file_path}...")
+        print(f"Loading {file_path}")
 
         df = pd.read_csv(file_path)
 
-        # Normalize column names to lowercase
+        # normalize column names
         df.columns = df.columns.str.lower().str.strip()
-        
-        # Replace NaN with None for SQL NULL compatibility
-        df = df.where(pd.notnull(df), None)
 
         records = []
+
         for _, row in df.iterrows():
-            # Extract bank name and get the corresponding ID
-            csv_bank_name = row.get("bank", "")
-            bank_id = get_bank_id(csv_bank_name)
+            bank_name = str(row["bank"]).lower().strip()
 
-            records.append((
-                bank_id,
-                row.get("review"),           # CSV: review -> DB: review_text
-                row.get("rating"),
-                row.get("date"),             # CSV: date -> DB: review_date
-                row.get("sentiment_label"),
-                row.get("sentiment_score"),
-                row.get("identified_theme"),
-                row.get("language", "en")
-            ))
+            sentiment_label, sentiment_score = get_sentiment(row["review"])
 
-        # Filter out records where bank_id couldn't be determined
-        valid_records = [r for r in records if r[0] is not None]
+            records.append(
+                (
+                    BANK_MAP.get(bank_name),
+                    row["review"],
+                    row["rating"],
+                    row["date"],
+                    sentiment_label,
+                    sentiment_score
+                )
+            )
 
-        if valid_records:
-            cur.executemany(INSERT_QUERY, valid_records)
-            conn.commit()
-            total += len(valid_records)
-            print(f"✅ Successfully inserted {len(valid_records)} rows from {file_path}")
-        else:
-            print(f"⚠️ No valid bank IDs found in {file_path}")
+        cur.executemany(INSERT_QUERY, records)
+        conn.commit()
 
-    print(f"\n🚀 DONE. Total rows inserted into 'reviews3': {total}")
+        total += len(records)
+        print(f"Inserted {len(records)} rows")
+
+    print(f"\nDONE. Total inserted: {total}")
 
 except Exception as e:
     conn.rollback()
-    print("❌ Error:", e)
+    print("Error:", e)
 
 finally:
     cur.close()
