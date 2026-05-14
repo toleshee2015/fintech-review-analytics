@@ -1,85 +1,39 @@
 import pandas as pd
-import spacy
+import os
 
-# Load spaCy English model
-nlp = spacy.load("en_core_web_sm")
+RAW_DIR = "data/processed"
+OUT_DIR = "data/processed"
 
-# -------------------------
-# Text preprocessing function
-# -------------------------
-def preprocess_text(
-    text,
-    remove_stopwords=True,
-    lemmatize=True
-):
-    """
-    Preprocess review text using spaCy.
+files = {
+    "Commercial Bank of Ethiopia": "cbe_clean.csv",
+    "Bank of Abyssinia": "boa_clean.csv",
+    "Dashen Bank": "dashen_clean.csv"
+}
 
-    Steps:
-    - Tokenization
-    - Lowercasing
-    - Stop-word removal
-    - Punctuation removal
-    - Optional lemmatization
-    """
+dfs = []
 
-    # Handle missing values
-    if pd.isna(text):
-        return ""
+for bank, file in files.items():
+    path = os.path.join(RAW_DIR, file)
+    df = pd.read_csv(path)
 
-    # Convert to lowercase
-    text = str(text).lower()
+    df["bank_name"] = bank
 
-    # Process text with spaCy
-    doc = nlp(text)
+    # standardize columns
+    df = df.rename(columns={
+        "review": "review_text",
+        "at": "review_date"
+    })
 
-    cleaned_tokens = []
+    df["source"] = "Google Play"
 
-    for token in doc:
+    # basic cleaning
+    df = df.dropna(subset=["review_text", "rating"])
 
-        # Skip punctuation and spaces
-        if token.is_punct or token.is_space:
-            continue
+    dfs.append(df)
 
-        # Skip stopwords if enabled
-        if remove_stopwords and token.is_stop:
-            continue
+df_final = pd.concat(dfs, ignore_index=True)
 
-        # Lemmatization
-        if lemmatize:
-            cleaned_tokens.append(token.lemma_)
-        else:
-            cleaned_tokens.append(token.text)
+output_path = os.path.join(OUT_DIR, "bank_reviews_cleaned.csv")
+df_final.to_csv(output_path, index=False)
 
-    # Join tokens back into string
-    return " ".join(cleaned_tokens)
-
-
-# -------------------------
-# Main processing pipeline
-# -------------------------
-def preprocess_dataset(input_path, output_path):
-
-    # Load dataset
-    df = pd.read_csv(input_path)
-
-    # Apply preprocessing
-    df["cleaned_review"] = df["review"].apply(
-        preprocess_text
-    )
-
-    # Save cleaned dataset
-    df.to_csv(output_path, index=False)
-
-    print(f"Processed dataset saved to: {output_path}")
-
-
-# -------------------------
-# Run script
-# -------------------------
-if __name__ == "__main__":
-
-    preprocess_dataset(
-        "data/processed/cbe_clean.csv",
-        "data/processed/cbe_text_processed.csv"
-    )
+print("Preprocessing complete:", df_final.shape)
