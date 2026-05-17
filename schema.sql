@@ -1,14 +1,8 @@
--- =========================
--- BANKS TABLE
--- =========================
+
 CREATE TABLE IF NOT EXISTS banks (
     bank_id SERIAL PRIMARY KEY,
     bank_name VARCHAR(100) UNIQUE NOT NULL
 );
-
--- =========================
--- REVIEWS TABLE
--- =========================
 CREATE TABLE IF NOT EXISTS reviews (
     review_id SERIAL PRIMARY KEY,
     bank_id INTEGER NOT NULL,
