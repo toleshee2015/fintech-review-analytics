@@ -2,7 +2,6 @@ CREATE TABLE IF NOT EXISTS banks (
     bank_id SERIAL PRIMARY KEY,
     bank_name VARCHAR(100) UNIQUE NOT NULL
 );
-
 CREATE TABLE IF NOT EXISTS reviews (
     review_id SERIAL PRIMARY KEY,
     bank_id INTEGER NOT NULL,
@@ -18,15 +17,10 @@ CREATE TABLE IF NOT EXISTS reviews (
         REFERENCES banks(bank_id)
         ON DELETE CASCADE
 );
-
--- BANKS TABLE
-
 CREATE TABLE IF NOT EXISTS banks (
     bank_id SERIAL PRIMARY KEY,
     bank_name VARCHAR(100) UNIQUE NOT NULL
 );
-
--- REVIEWS TABLE
 CREATE TABLE IF NOT EXISTS reviews (
     review_id SERIAL PRIMARY KEY,
     bank_id INTEGER NOT NULL,
