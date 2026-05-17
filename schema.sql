@@ -1,4 +1,3 @@
-
 CREATE TABLE IF NOT EXISTS banks (
     bank_id SERIAL PRIMARY KEY,
     bank_name VARCHAR(100) UNIQUE NOT NULL
