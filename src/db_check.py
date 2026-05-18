@@ -1,16 +1,12 @@
-from src.database import get_connection
+from sqlalchemy import text
+from src.database import get_engine
 
-def check_connection():
-    conn = get_connection()
-    cur = conn.cursor()
+def check_db():
+    engine = get_engine()
 
-    cur.execute("SELECT version();")
-    print(cur.fetchone())
-
-    cur.close()
-    conn.close()
-
-    print("Database connection OK")
+    with engine.connect() as conn:
+        result = conn.execute(text("SELECT COUNT(*) FROM reviews"))
+        print(result.fetchone())
 
 if __name__ == "__main__":
-    check_connection()
+    check_db()
