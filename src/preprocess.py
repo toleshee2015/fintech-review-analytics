@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 
-print("RUNNING THIS FILE:", __file__)
+print("PREPROCESS STARTED:", __file__)
 
 # ================= ROOT =================
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -13,12 +13,14 @@ os.makedirs(OUT_DIR, exist_ok=True)
 
 # ================= INPUT FILES =================
 files = {
-    "commercial bank of ethiopia": os.path.join(RAW_DIR, "commercial_bank_of_ethiopia_reviews.csv"),
-    "bank of abyssinia": os.path.join(RAW_DIR, "bank_of_abyssinia_reviews.csv"),
-    "dashen bank": os.path.join(RAW_DIR, "dashen_bank_reviews.csv")
+    "commercial_bank_of_ethiopia": os.path.join(RAW_DIR, "commercial_bank_of_ethiopia_reviews.csv"),
+    "bank_of_abyssinia": os.path.join(RAW_DIR, "bank_of_abyssinia_reviews.csv"),
+    "dashen_bank": os.path.join(RAW_DIR, "dashen_bank_reviews.csv")
 }
 
 # ================= PROCESS =================
+all_data = []
+
 for bank, path in files.items():
     print(f"Reading: {path}")
 
@@ -27,21 +29,52 @@ for bank, path in files.items():
 
     df = pd.read_csv(path)
 
-    df["bank"] = bank
+    # normalize column names safely
+    df.columns = [c.lower().strip() for c in df.columns]
 
-    # basic cleanup
-    if "review" not in df.columns:
-        df = df.rename(columns={df.columns[0]: "review"})
+    # flexible mapping (your dataset varies slightly)
+    rename_map = {}
+
+    if "review" in df.columns:
+        rename_map["review"] = "review_text"
+    elif "content" in df.columns:
+        rename_map["content"] = "review_text"
+    elif "text" in df.columns:
+        rename_map["text"] = "review_text"
+
+    if "rating" in df.columns:
+        rename_map["rating"] = "rating"
+
+    if "at" in df.columns:
+        rename_map["at"] = "review_date"
+
+    df = df.rename(columns=rename_map)
+
+    # ensure required columns exist
+    if "review_text" not in df.columns:
+        raise ValueError(f"No review text column found in {path}")
 
     if "rating" not in df.columns:
-        df = df.rename(columns={df.columns[1]: "rating"})
+        df["rating"] = None
 
-    df = df.dropna(subset=["review", "rating"])
+    # clean
+    df = df.dropna(subset=["review_text"])
+    df["rating"] = pd.to_numeric(df["rating"], errors="coerce")
 
-    output_file = os.path.join(OUT_DIR, f"{bank.replace(' ', '_')}_clean.csv")
+    df["bank_name"] = bank.replace("_", " ").lower()
 
+    all_data.append(df)
+
+    # save per-bank file
+    output_file = os.path.join(OUT_DIR, f"{bank}_clean.csv")
     df.to_csv(output_file, index=False)
 
     print(f"Saved: {output_file}")
 
-print("DONE")
+# ================= OPTIONAL COMBINED FILE =================
+final_df = pd.concat(all_data, ignore_index=True)
+
+final_output = os.path.join(OUT_DIR, "all_banks_clean.csv")
+final_df.to_csv(final_output, index=False)
+
+print("DONE: preprocessing completed successfully")
