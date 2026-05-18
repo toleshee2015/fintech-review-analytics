@@ -2,8 +2,7 @@
 .ipynb_checkpoints/
 
 # Ignore datasets
-data/
-
+data/raw/
 # Ignore CSV files
 *.csv
 
