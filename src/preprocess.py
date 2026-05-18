@@ -1,39 +1,44 @@
-import pandas as pd
 import os
+import pandas as pd
 
-RAW_DIR = "data/processed"
-OUT_DIR = "data/processed"
+# ================= PATHS =================
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-files = {
-    "Commercial Bank of Ethiopia": "cbe_clean.csv",
-    "Bank of Abyssinia": "boa_clean.csv",
-    "Dashen Bank": "dashen_clean.csv"
+raw_files = {
+    "commercial bank of ethiopia": os.path.join(BASE_DIR, "data", "raw", "commercial_bank_of_ethiopia_reviews.csv"),
+    "bank of abyssinia": os.path.join(BASE_DIR, "data", "raw", "bank_of_abyssinia_reviews.csv"),
+    "dashen bank": os.path.join(BASE_DIR, "data", "raw", "dashen_bank_reviews.csv")
 }
 
-dfs = []
+processed_dir = os.path.join(BASE_DIR, "data", "processed")
+os.makedirs(processed_dir, exist_ok=True)
 
-for bank, file in files.items():
-    path = os.path.join(RAW_DIR, file)
+# ================= PROCESS =================
+for bank, path in raw_files.items():
+    print(f"Processing: {path}")
+
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"Missing raw file: {path}")
+
     df = pd.read_csv(path)
 
-    df["bank_name"] = bank
-
-    # standardize columns
+    # standard columns
     df = df.rename(columns={
-        "review": "review_text",
-        "at": "review_date"
+        "review": "review",
+        "rating": "rating",
+        "at": "date"
     })
 
-    df["source"] = "Google Play"
+    df["bank"] = bank
 
-    # basic cleaning
-    df = df.dropna(subset=["review_text", "rating"])
+    # simple cleaning
+    df = df.dropna(subset=["review", "rating"])
 
-    dfs.append(df)
+    # save processed file
+    output_path = os.path.join(processed_dir, f"{bank.replace(' ', '_')}_clean.csv")
 
-df_final = pd.concat(dfs, ignore_index=True)
+    df.to_csv(output_path, index=False)
 
-output_path = os.path.join(OUT_DIR, "bank_reviews_cleaned.csv")
-df_final.to_csv(output_path, index=False)
+    print(f"Saved: {output_path}")
 
-print("Preprocessing complete:", df_final.shape)
+print("Preprocessing completed successfully.")
