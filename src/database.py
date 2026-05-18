@@ -1,12 +1,4 @@
-import psycopg2
+from sqlalchemy import create_engine
 
-DB_CONFIG = {
-    "host": "localhost",
-    "database": "bank_reviews",
-    "user": "postgres",
-    "password": "123",
-    "port": 5432
-}
-
-def get_connection():
-    return psycopg2.connect(**DB_CONFIG)
+def get_engine():
+    return create_engine("postgresql://user:password@localhost:5432/bank_reviews")
