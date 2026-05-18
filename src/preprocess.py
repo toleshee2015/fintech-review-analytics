@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 
-print("PREPROCESS STARTED")
+print("RUNNING THIS FILE:", __file__)
 
 # ================= ROOT =================
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
