@@ -1,101 +1,73 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-print("Visualization script started...")
+print("Visualization started...")
 
-# -----------------------------
 # Load datasets
-# -----------------------------
 cbe = pd.read_csv("data/processed/cbe_sentiment.csv")
 dashen = pd.read_csv("data/processed/dashen_clean.csv")
 boa = pd.read_csv("data/processed/boa_clean.csv")
 
-# -----------------------------
-# Standardize columns
-# -----------------------------
+# Add bank labels
 cbe["bank"] = "CBE"
 dashen["bank"] = "Dashen"
 boa["bank"] = "BOA"
 
 # -----------------------------
-# Combine all datasets
+# STANDARDIZE missing columns
 # -----------------------------
-df = pd.concat([cbe, dashen, boa])
+for df in [dashen, boa]:
+    if "sentiment" not in df.columns:
+        df["sentiment"] = "unknown"
+    if "confidence" not in df.columns:
+        df["confidence"] = 0
 
-print("Datasets loaded successfully.")
+# Ensure CBE also safe copy
+if "sentiment" not in cbe.columns:
+    cbe["sentiment"] = "unknown"
+if "confidence" not in cbe.columns:
+    cbe["confidence"] = 0
+
+# Combine all
+df = pd.concat([cbe, dashen, boa], ignore_index=True)
+
+print("Combined dataset ready")
 
 # -----------------------------
-# Chart 1: Sentiment Distribution
+# 1. Sentiment distribution
 # -----------------------------
-sentiment_counts = (
-    df.groupby(["bank", "sentiment"])
-    .size()
-    .unstack(fill_value=0)
-)
+sentiment_counts = df.groupby(["bank", "sentiment"]).size().unstack(fill_value=0)
 
 sentiment_counts.plot(kind="bar")
-
 plt.title("Sentiment Distribution by Bank")
-plt.xlabel("Bank")
-plt.ylabel("Number of Reviews")
-
 plt.tight_layout()
-
-plt.savefig(
-    "data/processed/sentiment_distribution.png"
-)
-
-print("Chart 1 saved.")
-
+plt.savefig("data/processed/sentiment_distribution.png")
 plt.close()
 
-# -----------------------------
-# Chart 2: Average Confidence
-# -----------------------------
-avg_scores = (
-    df.groupby("bank")["confidence"]
-    .mean()
-)
+print("Sentiment chart saved")
 
-avg_scores.plot(kind="bar")
+# -----------------------------
+# 2. Average confidence
+# -----------------------------
+df.groupby("bank")["confidence"].mean().plot(kind="bar")
 
 plt.title("Average Sentiment Confidence")
-plt.xlabel("Bank")
-plt.ylabel("Confidence Score")
-
 plt.tight_layout()
-
-plt.savefig(
-    "data/processed/average_sentiment_score.png"
-)
-
-print("Chart 2 saved.")
-
+plt.savefig("data/processed/average_confidence.png")
 plt.close()
 
-# -----------------------------
-# Chart 3: Ratings Distribution
-# -----------------------------
-rating_counts = (
-    df.groupby(["bank", "rating"])
-    .size()
-    .unstack(fill_value=0)
-)
+print("Confidence chart saved")
 
-rating_counts.T.plot(kind="bar")
+# -----------------------------
+# 3. Ratings distribution
+# -----------------------------
+df.groupby(["bank", "rating"]).size().unstack(fill_value=0).T.plot(kind="bar")
 
 plt.title("Ratings Distribution")
-plt.xlabel("Rating")
-plt.ylabel("Review Count")
-
 plt.tight_layout()
-
-plt.savefig(
-    "data/processed/rating_distribution.png"
-)
-
-print("Chart 3 saved.")
-
+plt.savefig("data/processed/rating_distribution.png")
 plt.close()
 
-print("Visualizations generated successfully.")
+print("Rating chart saved")
+
+print("DONE - all visualizations generated")
