@@ -1,12 +1,12 @@
-from sqlalchemy import create_engine
+import psycopg2
 
-SERVER = "localhost\\SQLEXPRESS"
-DATABASE = "bank_reviews"
+DB_CONFIG = {
+    "host": "localhost",
+    "database": "bank_reviews",
+    "user": "postgres",
+    "password": "123",
+    "port": 5432
+}
 
-engine = create_engine(
-    "mssql+pyodbc://@localhost\\SQLEXPRESS/"
-    + DATABASE +
-    "?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes"
-)
-
-print("Database connection successful")
+def get_connection():
+    return psycopg2.connect(**DB_CONFIG)
