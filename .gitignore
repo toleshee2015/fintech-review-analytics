@@ -2,10 +2,10 @@
 .ipynb_checkpoints/
 
 # Ignore datasets
-data/*
+data/raw/
+data/*.csv
 !data/processed/
 !data/processed/*.png
-!data/processed/*.csv
 # Ignore CSV files
 *.csv
 
