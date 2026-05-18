@@ -1,14 +1,16 @@
 #ignore
 .ipynb_checkpoints/
 
-# Ignore datasets
+# Ignore raw datasets only
 data/raw/
-data/*.csv
-!data/processed/
-!data/processed/*.png
-# Ignore CSV files
+
+# Ignore CSV everywhere (optional, keep if needed)
 *.csv
 
+# DO NOT ignore processed outputs
+!data/processed/
+!data/processed/*.png
+!data/processed/*.csv
 # Ignore database files
 *.db
 
