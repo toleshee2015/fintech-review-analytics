@@ -1,8 +1,18 @@
-from sqlalchemy import create_engine
+from database import get_connection
 
-engine = create_engine(
-    "mssql+pyodbc://@localhost\\SQLEXPRESS/bank_reviews"
-    "?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes"
-)
+def create_tables():
+    conn = get_connection()
+    cur = conn.cursor()
 
-print(engine.execute("SELECT COUNT(*) FROM Reviews").fetchall())
+    with open("schema.sql", "r", encoding="utf-8") as f:
+        sql = f.read()
+        cur.execute(sql)
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    print("Database schema executed successfully.")
+
+if __name__ == "__main__":
+    create_tables()
