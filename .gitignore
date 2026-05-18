@@ -1,18 +1,20 @@
 #ignore
 .ipynb_checkpoints/
 
-# Ignore raw datasets only
+# Raw data only
 data/raw/
 
-# Ignore CSV everywhere (optional, keep if needed)
-*.csv
-
-# DO NOT ignore processed outputs
+# Keep processed outputs
 !data/processed/
 !data/processed/*.png
 !data/processed/*.csv
-# Ignore database files
-*.db
+
+# Normal ignores
+__pycache__/
+*.pyc
+venv/
+.env
+.ipynb_checkpoints/
 
 # Python cache
 __pycache__/
