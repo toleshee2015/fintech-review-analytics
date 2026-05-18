@@ -1,18 +1,16 @@
-from database import get_connection
+from src.database import get_connection
 
-def create_tables():
+def check_connection():
     conn = get_connection()
     cur = conn.cursor()
 
-    with open("schema.sql", "r", encoding="utf-8") as f:
-        sql = f.read()
-        cur.execute(sql)
+    cur.execute("SELECT version();")
+    print(cur.fetchone())
 
-    conn.commit()
     cur.close()
     conn.close()
 
-    print("Database schema executed successfully.")
+    print("Database connection OK")
 
 if __name__ == "__main__":
-    create_tables()
+    check_connection()
