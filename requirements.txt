@@ -6,7 +6,8 @@ numpy>=1.26,<2.0
 
 # Testing
 pytest>=7.0
-
+pytest
+pytest-cov
 # Machine learning
 scikit-learn>=1.3.0
 
