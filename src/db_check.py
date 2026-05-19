@@ -1,5 +1,5 @@
 
-from src.database import get_engine
+from database import get_engine
 import pandas as pd
 
 def check_connection():
