@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 annotated-doc==0.0.4
 annotated-types==0.7.0
 anyio==4.13.0
@@ -191,3 +192,35 @@ psycopg2-binary>=2.9.9
 jupyter
 ipykernel
 
+=======
+# Core data handling
+pandas>=2.0
+numpy>=1.26,<2.0
+
+# Web scraping
+google-play-scraper==1.2.7
+
+# NLP - classical + ML
+scikit-learn>=1.3.0
+
+# Transformers (sentiment analysis)
+transformers>=4.38.0
+torch>=2.0.0
+
+# NLP preprocessing
+spacy>=3.7.0
+
+# Download spaCy model separately:
+# python -m spacy download en_core_web_sm
+
+# Alternative NLP tools (optional but useful)
+nltk>=3.8.1
+
+# Database layer
+SQLAlchemy>=2.0.0
+psycopg2-binary>=2.9.9
+
+# Optional (for notebooks)
+jupyter
+ipykernel
+>>>>>>> 961afa8 (Update requirements.txt)
