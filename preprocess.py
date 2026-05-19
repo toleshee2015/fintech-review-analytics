@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 
-print("PREPROCESS RUNNING OK")
+print("PREPROCESS RUNNING CLEAN VERSION")
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -21,11 +21,11 @@ for name, file in files.items():
 
     print("Reading:", path)
 
+    if not os.path.exists(path):
+        raise FileNotFoundError(path)
+
     df = pd.read_csv(path)
 
-    out_path = os.path.join(OUT_DIR, f"{name}_clean.csv")
-    df.to_csv(out_path, index=False)
+    df.to_csv(os.path.join(OUT_DIR, f"{name}_clean.csv"), index=False)
 
-    print("Saved:", out_path)
-
-print("DONE")
+    print("Saved:", name)

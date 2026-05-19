@@ -1,12 +1,34 @@
-from sqlalchemy import text
-from src.database import get_engine
+import os
+import pandas as pd
 
-def check_db():
-    engine = get_engine()
+print("PREPROCESS RUNNING")
 
-    with engine.connect() as conn:
-        result = conn.execute(text("SELECT COUNT(*) FROM reviews"))
-        print(result.fetchone())
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-if __name__ == "__main__":
-    check_db()
+RAW_DIR = os.path.join(BASE_DIR, "data", "raw")
+OUT_DIR = os.path.join(BASE_DIR, "data", "processed")
+
+os.makedirs(OUT_DIR, exist_ok=True)
+
+files = {
+    "cbe": "commercial_bank_of_ethiopia_reviews.csv",
+    "boa": "bank_of_abyssinia_reviews.csv",
+    "dashen": "dashen_bank_reviews.csv"
+}
+
+for name, file in files.items():
+    path = os.path.join(RAW_DIR, file)
+
+    print("Reading:", path)
+
+    if not os.path.exists(path):
+        raise FileNotFoundError(path)
+
+    df = pd.read_csv(path)
+
+    out_path = os.path.join(OUT_DIR, f"{name}_clean.csv")
+    df.to_csv(out_path, index=False)
+
+    print("Saved:", out_path)
+
+print("DONE")
