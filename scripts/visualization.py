@@ -20,9 +20,14 @@ dashen["bank"] = "Dashen"
 # -------------------------
 df = pd.concat([cbe, boa, dashen])
 
-# -------------------------
-# 1. Sentiment Distribution
-# -------------------------
+# Create output folder
+import os
+os.makedirs("reports/figures", exist_ok=True)
+
+# =========================================================
+# 1. SENTIMENT DISTRIBUTION BY BANK
+# =========================================================
+
 sentiment_counts = (
     df.groupby(["bank", "sentiment_label"])
     .size()
@@ -40,12 +45,15 @@ plt.ylabel("Number of Reviews")
 plt.xticks(rotation=0)
 
 plt.tight_layout()
-plt.savefig("data/processed/sentiment_distribution.png")
+
+plt.savefig("reports/figures/sentiment_distribution.png")
+
 plt.show()
 
-# -------------------------
-# 2. Average Sentiment Score
-# -------------------------
+# =========================================================
+# 2. AVERAGE SENTIMENT SCORE BY BANK
+# =========================================================
+
 avg_scores = (
     df.groupby("bank")["sentiment_score"]
     .mean()
@@ -58,31 +66,80 @@ avg_scores.plot(
 
 plt.title("Average Sentiment Score by Bank")
 plt.xlabel("Bank")
-plt.ylabel("Average Score")
+plt.ylabel("Average Sentiment Score")
+
+plt.xticks(rotation=0)
 
 plt.tight_layout()
-plt.savefig("data/processed/average_sentiment.png")
+
+plt.savefig("reports/figures/average_sentiment_score.png")
+
 plt.show()
 
-# -------------------------
-# 3. Theme Distribution
-# -------------------------
-theme_counts = (
-    df["identified_theme"]
-    .value_counts()
+# =========================================================
+# 3. RATING DISTRIBUTION BY BANK
+# =========================================================
+
+rating_counts = (
+    df.groupby(["bank", "rating"])
+    .size()
+    .unstack(fill_value=0)
 )
 
-theme_counts.plot(
+rating_counts.plot(
     kind="bar",
     figsize=(8, 5)
 )
 
-plt.title("Theme Distribution")
+plt.title("Rating Distribution by Bank")
+plt.xlabel("Bank")
+plt.ylabel("Number of Ratings")
+
+plt.xticks(rotation=0)
+
+plt.tight_layout()
+
+plt.savefig("reports/figures/rating_distribution.png")
+
+plt.show()
+
+# =========================================================
+# 4. THEME DISTRIBUTION COMPARISON
+# =========================================================
+
+theme_counts = (
+    df.groupby(["bank", "identified_theme"])
+    .size()
+    .unstack(fill_value=0)
+)
+
+# Optional:
+# keep only top 10 themes overall
+
+top_themes = (
+    df["identified_theme"]
+    .value_counts()
+    .head(10)
+    .index
+)
+
+theme_counts = theme_counts[top_themes]
+
+theme_counts.T.plot(
+    kind="bar",
+    figsize=(10, 6)
+)
+
+plt.title("Top Complaint Themes by Bank")
 plt.xlabel("Theme")
 plt.ylabel("Frequency")
 
+plt.xticks(rotation=45)
+
 plt.tight_layout()
-plt.savefig("data/processed/theme_distribution.png")
+
+plt.savefig("reports/figures/theme_distribution.png")
+
 plt.show()
 
-print("Visualizations completed successfully.")
+print("All visualizations generated successfully.")
