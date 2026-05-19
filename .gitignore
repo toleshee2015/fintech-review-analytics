@@ -1,25 +1,48 @@
-#ignore
+# =========================
+# Python cache
+# =========================
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+
+# =========================
+# Virtual environments
+# =========================
+venv/
+.env
+
+# =========================
+# Jupyter Notebook cache
+# =========================
 .ipynb_checkpoints/
 
-# Raw data only
+# =========================
+# Raw datasets
+# =========================
 data/raw/
 
-# Keep processed outputs
+# =========================
+# Processed datasets
+# Keep CSV + PNG outputs
+# =========================
 !data/processed/
-!data/processed/*.png
 !data/processed/*.csv
+!data/processed/*.png
 
-# Normal ignores
-__pycache__/
-*.pyc
-venv/
-.env
-.ipynb_checkpoints/
+# =========================
+# Reports and generated figures
+# Ignore generated plots in reports
+# =========================
+reports/figures/*.png
 
-# Python cache
-__pycache__/
-*.pyc
+# =========================
+# VS Code settings
+# =========================
+.vscode/
 
-# Virtual environments
-venv/
-.env
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
