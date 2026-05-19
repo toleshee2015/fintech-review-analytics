@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from src.database import get_engine
 
-<<<<<<< HEAD
+
 engine = get_engine()
 
 print("Connecting to database...")
@@ -25,7 +25,7 @@ print("Data loaded from DB:", df.shape)
 # 1. Sentiment Distribution by Bank
 # -------------------------
 sentiment_counts = df.groupby(["bank_name", "sentiment_label"]).size().unstack(fill_value=0)
-=======
+
 # =========================================================
 # BASE DIRECTORY
 # =========================================================
@@ -72,7 +72,7 @@ os.makedirs(figures_dir, exist_ok=True)
 # 1. SENTIMENT DISTRIBUTION BY BANK
 # =========================================================
 sentiment_counts = df.groupby(["bank", "sentiment_label"]).size().unstack(fill_value=0)
->>>>>>> task-3
+
 
 sentiment_counts.plot(kind="bar", figsize=(8, 5))
 plt.title("Sentiment Distribution by Bank")
@@ -81,7 +81,7 @@ plt.ylabel("Number of Reviews")
 plt.xticks(rotation=0)
 plt.tight_layout()
 
-<<<<<<< HEAD
+
 plt.savefig("data/processed/sentiment_distribution_db.png")
 plt.show()
 
@@ -89,7 +89,7 @@ plt.show()
 # 2. Average Sentiment Score by Bank
 # -------------------------
 avg_scores = df.groupby("bank_name")["sentiment_score"].mean()
-=======
+
 plt.savefig(figures_dir / "sentiment_distribution.png")
 plt.show()
 
@@ -97,12 +97,12 @@ plt.show()
 # 2. AVERAGE SENTIMENT SCORE BY BANK
 # =========================================================
 avg_scores = df.groupby("bank")["sentiment_score"].mean()
->>>>>>> task-3
+
 
 avg_scores.plot(kind="bar", figsize=(6, 4))
 plt.title("Average Sentiment Score by Bank")
 plt.xlabel("Bank")
-<<<<<<< HEAD
+
 plt.ylabel("Average Score")
 plt.tight_layout()
 
@@ -124,7 +124,7 @@ plt.savefig("data/processed/theme_distribution_db.png")
 plt.show()
 
 print("Visualizations completed from database.")
-=======
+
 plt.ylabel("Average Sentiment Score")
 plt.xticks(rotation=0)
 plt.tight_layout()
@@ -167,4 +167,4 @@ plt.show()
 # =========================================================
 print("All visualizations generated successfully.")
 print(f"Figures saved in: {figures_dir}")
->>>>>>> task-3
+
