@@ -1,8 +1,30 @@
-from sqlalchemy import create_engine
+from src.database import get_engine
+import pandas as pd
 
-engine = create_engine(
-    "mssql+pyodbc://@localhost\\SQLEXPRESS/bank_reviews"
-    "?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes"
-)
+def check_connection():
+    engine = get_engine()
 
-print(engine.execute("SELECT COUNT(*) FROM Reviews").fetchall())
+    try:
+        with engine.connect() as conn:
+            print("Database connection successful!")
+            result = conn.execute("SELECT 1")
+            print(result.fetchone())
+
+    except Exception as e:
+        print("Database connection failed:")
+        print(e)
+
+def preview_data():
+    engine = get_engine()
+
+    try:
+        df = pd.read_sql("SELECT * FROM reviews LIMIT 5", engine)
+        print(df)
+
+    except Exception as e:
+        print("Failed to fetch data:")
+        print(e)
+
+if __name__ == "__main__":
+    check_connection()
+    preview_data()
