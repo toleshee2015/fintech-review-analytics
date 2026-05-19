@@ -11,4 +11,8 @@ CREATE TABLE reviews (
     sentiment_label VARCHAR(20),
     sentiment_score NUMERIC,
     identified_theme VARCHAR(100)
+<<<<<<< HEAD
 );
+=======
+);
+>>>>>>> 696bbd1df31d4ad151c48da269026ac88de00c26

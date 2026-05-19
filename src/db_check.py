@@ -3,7 +3,13 @@ import pandas as pd
 
 print("PREPROCESS RUNNING")
 
+<<<<<<< HEAD
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+=======
+    with engine.connect() as conn:
+        result = conn.execute(text("SELECT COUNT(*) FROM reviews"))
+        print("Total reviews:", result.fetchone()[0])
+>>>>>>> 696bbd1df31d4ad151c48da269026ac88de00c26
 
 RAW_DIR = os.path.join(BASE_DIR, "data", "raw")
 OUT_DIR = os.path.join(BASE_DIR, "data", "processed")
