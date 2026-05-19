@@ -3,11 +3,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from src.database import get_engine
 
-
 engine = get_engine()
 
 print("Connecting to database...")
-
 # -------------------------
 # Load data directly from PostgreSQL
 # -------------------------
@@ -16,28 +14,22 @@ SELECT review_text, rating, review_date, bank_name, sentiment_label, sentiment_s
 FROM reviews
 JOIN banks ON reviews.bank_id = banks.bank_id
 """
-
 df = pd.read_sql(query, engine)
-
 print("Data loaded from DB:", df.shape)
-
 # -------------------------
 # 1. Sentiment Distribution by Bank
 # -------------------------
 sentiment_counts = df.groupby(["bank_name", "sentiment_label"]).size().unstack(fill_value=0)
-
 # =========================================================
 # BASE DIRECTORY
 # =========================================================
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 # =========================================================
 # CORRECT DATASET PATHS (FIXED)
 # =========================================================
 cbe_path = BASE_DIR / "data" / "processed" / "cbe_clean.csv"
 boa_path = BASE_DIR / "data" / "processed" / "boa_clean.csv"
 dashen_path = BASE_DIR / "data" / "processed" / "dashen_clean.csv"
-
 # =========================================================
 # LOAD DATASETS
 # =========================================================
@@ -73,14 +65,12 @@ os.makedirs(figures_dir, exist_ok=True)
 # =========================================================
 sentiment_counts = df.groupby(["bank", "sentiment_label"]).size().unstack(fill_value=0)
 
-
 sentiment_counts.plot(kind="bar", figsize=(8, 5))
 plt.title("Sentiment Distribution by Bank")
 plt.xlabel("Bank")
 plt.ylabel("Number of Reviews")
 plt.xticks(rotation=0)
 plt.tight_layout()
-
 
 plt.savefig("data/processed/sentiment_distribution_db.png")
 plt.show()
@@ -157,10 +147,8 @@ plt.tight_layout()
 
 plt.savefig(figures_dir / "theme_distribution.png")
 plt.show()
-
 # =========================================================
 # DONE
 # =========================================================
 print("All visualizations generated successfully.")
 print(f"Figures saved in: {figures_dir}")
-
