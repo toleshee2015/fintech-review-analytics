@@ -14,4 +14,9 @@ CREATE TABLE reviews (
     sentiment_score FLOAT,
     identified_theme VARCHAR(50),
     source VARCHAR(50)
+
+      CONSTRAINT fk_bank
+        FOREIGN KEY (bank_id)
+        REFERENCES banks(bank_id)
+        ON DELETE CASCADE
 );
