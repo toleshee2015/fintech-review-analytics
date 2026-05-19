@@ -1,12 +1,6 @@
 from sqlalchemy import create_engine
 
-SERVER = "localhost\\SQLEXPRESS"
-DATABASE = "bank_reviews"
-
-engine = create_engine(
-    "mssql+pyodbc://@localhost\\SQLEXPRESS/"
-    + DATABASE +
-    "?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes"
-)
-
-print("Database connection successful")
+def get_engine():
+    return create_engine(
+        "postgresql+psycopg2://postgres:123@localhost:5432/fintech_reviews"
+    )
