@@ -97,8 +97,6 @@ plt.show()
 # 2. AVERAGE SENTIMENT SCORE BY BANK
 # =========================================================
 avg_scores = df.groupby("bank")["sentiment_score"].mean()
-
-
 avg_scores.plot(kind="bar", figsize=(6, 4))
 plt.title("Average Sentiment Score by Bank")
 plt.xlabel("Bank")
@@ -113,7 +111,6 @@ plt.show()
 # 3. Theme Distribution
 # -------------------------
 theme_counts = df["identified_theme"].value_counts()
-
 theme_counts.plot(kind="bar", figsize=(8, 5))
 plt.title("Theme Distribution (All Banks)")
 plt.xlabel("Theme")
@@ -136,7 +133,6 @@ plt.show()
 # 3. RATING DISTRIBUTION BY BANK
 # =========================================================
 rating_counts = df.groupby(["bank", "rating"]).size().unstack(fill_value=0)
-
 rating_counts.plot(kind="bar", figsize=(8, 5))
 plt.title("Rating Distribution by Bank")
 plt.xlabel("Bank")
