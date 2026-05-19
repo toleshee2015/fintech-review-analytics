@@ -8,11 +8,25 @@ CREATE TABLE reviews (
     bank_id INTEGER REFERENCES banks(bank_id),
     review_text TEXT NOT NULL,
     rating INTEGER CHECK (rating BETWEEN 1 AND 5),
+
     sentiment_label VARCHAR(20),
     sentiment_score NUMERIC,
     identified_theme VARCHAR(100)
-<<<<<<< HEAD
+
 );
-=======
+
 );
->>>>>>> 696bbd1df31d4ad151c48da269026ac88de00c26
+
+    review_date DATE,
+
+    sentiment_label VARCHAR(20),
+    sentiment_score NUMERIC(5,4),
+    identified_theme VARCHAR(100),
+    language VARCHAR(10),
+
+    CONSTRAINT fk_bank
+        FOREIGN KEY (bank_id)
+        REFERENCES banks(bank_id)
+        ON DELETE CASCADE
+);
+
