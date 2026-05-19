@@ -205,7 +205,6 @@ finally:
 
     cur.close()
 
-=======
     for file_path in FILES:
         print(f"Loading {file_path}...")
 
@@ -253,5 +252,4 @@ except Exception as e:
 
 finally:
     cur.close()
->>>>>>> 2f4330a (Reorganize project structure)
     conn.close()
