@@ -35,10 +35,6 @@ fonttools==4.63.0
 fqdn==1.5.1
 fsspec==2026.4.0
 google-play-scraper==1.2.7
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 greenlet==3.5.0
 h11==0.16.0
 hf-xet==1.5.0
