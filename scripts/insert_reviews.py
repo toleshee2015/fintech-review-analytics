@@ -152,8 +152,6 @@ except Exception as e:
 
 finally:
     cur.close()
-<<<<<<< Updated upstream
     conn.close()
-=======
     conn.close()
 >>>>>>> Stashed changes
