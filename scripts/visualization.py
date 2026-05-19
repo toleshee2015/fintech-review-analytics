@@ -1,28 +1,58 @@
+from pathlib import Path
+import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# -------------------------
-# Load datasets
-# -------------------------
-cbe = pd.read_csv("data/processed/cbe_final_dataset.csv")
-boa = pd.read_csv("data/processed/boa_clean.csv")
-dashen = pd.read_csv("data/processed/dashen_clean.csv")
+# =========================================================
+# BASE DIRECTORY
+# =========================================================
 
-# -------------------------
-# Add bank names
-# -------------------------
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# =========================================================
+# DATASET PATHS
+# =========================================================
+
+cbe_path = BASE_DIR / "data" / "processed" / "cbe_final_dataset.csv"
+boa_path = BASE_DIR / "data" / "processed" / "boa_clean.csv"
+dashen_path = BASE_DIR / "data" / "processed" / "dashen_clean.csv"
+
+# =========================================================
+# LOAD DATASETS
+# =========================================================
+
+try:
+    cbe = pd.read_csv(cbe_path)
+    boa = pd.read_csv(boa_path)
+    dashen = pd.read_csv(dashen_path)
+
+    print("Datasets loaded successfully.")
+
+except FileNotFoundError as e:
+    print(f"File not found: {e}")
+    exit()
+
+# =========================================================
+# ADD BANK NAMES
+# =========================================================
+
 cbe["bank"] = "CBE"
 boa["bank"] = "BOA"
 dashen["bank"] = "Dashen"
 
-# -------------------------
-# Combine datasets
-# -------------------------
-df = pd.concat([cbe, boa, dashen])
+# =========================================================
+# COMBINE DATASETS
+# =========================================================
 
-# Create output folder
-import os
-os.makedirs("reports/figures", exist_ok=True)
+df = pd.concat([cbe, boa, dashen], ignore_index=True)
+
+# =========================================================
+# CREATE OUTPUT DIRECTORY
+# =========================================================
+
+figures_dir = BASE_DIR / "reports" / "figures"
+
+os.makedirs(figures_dir, exist_ok=True)
 
 # =========================================================
 # 1. SENTIMENT DISTRIBUTION BY BANK
@@ -46,7 +76,7 @@ plt.xticks(rotation=0)
 
 plt.tight_layout()
 
-plt.savefig("reports/figures/sentiment_distribution.png")
+plt.savefig(figures_dir / "sentiment_distribution.png")
 
 plt.show()
 
@@ -67,12 +97,11 @@ avg_scores.plot(
 plt.title("Average Sentiment Score by Bank")
 plt.xlabel("Bank")
 plt.ylabel("Average Sentiment Score")
-
 plt.xticks(rotation=0)
 
 plt.tight_layout()
 
-plt.savefig("reports/figures/average_sentiment_score.png")
+plt.savefig(figures_dir / "average_sentiment_score.png")
 
 plt.show()
 
@@ -94,17 +123,16 @@ rating_counts.plot(
 plt.title("Rating Distribution by Bank")
 plt.xlabel("Bank")
 plt.ylabel("Number of Ratings")
-
 plt.xticks(rotation=0)
 
 plt.tight_layout()
 
-plt.savefig("reports/figures/rating_distribution.png")
+plt.savefig(figures_dir / "rating_distribution.png")
 
 plt.show()
 
 # =========================================================
-# 4. THEME DISTRIBUTION COMPARISON
+# 4. TOP COMPLAINT THEMES BY BANK
 # =========================================================
 
 theme_counts = (
@@ -113,9 +141,7 @@ theme_counts = (
     .unstack(fill_value=0)
 )
 
-# Optional:
-# keep only top 10 themes overall
-
+# Keep top 10 themes overall
 top_themes = (
     df["identified_theme"]
     .value_counts()
@@ -133,13 +159,17 @@ theme_counts.T.plot(
 plt.title("Top Complaint Themes by Bank")
 plt.xlabel("Theme")
 plt.ylabel("Frequency")
-
 plt.xticks(rotation=45)
 
 plt.tight_layout()
 
-plt.savefig("reports/figures/theme_distribution.png")
+plt.savefig(figures_dir / "theme_distribution.png")
 
 plt.show()
 
+# =========================================================
+# COMPLETION MESSAGE
+# =========================================================
+
 print("All visualizations generated successfully.")
+print(f"Figures saved in: {figures_dir}")
