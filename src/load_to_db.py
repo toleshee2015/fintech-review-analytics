@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 
 # ================= DATABASE =================
 engine = create_engine(
-    "postgresql://postgres:password@localhost:5432/bank_reviews"
+    "postgresql://postgres:123@localhost:5432/bank_reviews"
 )
 
 # ================= PROJECT ROOT PATH =================
