@@ -1,9 +1,7 @@
 import psycopg2
 import pandas as pd
-<<<<<<< HEAD
+
 from textblob import TextBlob
-=======
->>>>>>> 2f4330a (Reorganize project structure)
 
 # -----------------------------
 # DB CONFIG
@@ -26,7 +24,7 @@ FILES = [
 ]
 
 # -----------------------------
-<<<<<<< HEAD
+
 # BANK MAP
 # -----------------------------
 BANK_MAP = {
@@ -83,7 +81,7 @@ def extract_theme(text):
 
 # -----------------------------
 # INSERT QUERY
-=======
+
 # BANK MAPPING 
 # (Matches the logic in your CSV and DB IDs)
 # -----------------------------
@@ -99,7 +97,7 @@ def get_bank_id(bank_name):
 
 # -----------------------------
 # INSERT QUERY (Updated to table 'reviews3')
->>>>>>> 2f4330a (Reorganize project structure)
+
 # -----------------------------
 INSERT_QUERY = """
 INSERT INTO reviews3 (
@@ -109,7 +107,6 @@ INSERT INTO reviews3 (
     review_date,
     sentiment_label,
     sentiment_score,
-<<<<<<< HEAD
     identified_theme
 )
 VALUES (%s, %s, %s, %s, %s, %s, %s)
@@ -120,7 +117,7 @@ VALUES (%s, %s, %s, %s, %s, %s, %s)
 # -----------------------------
 conn = psycopg2.connect(**DB_CONFIG)
 
-=======
+
     identified_theme,
     language
 )
@@ -131,13 +128,13 @@ VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
 # CONNECT DB
 # -----------------------------
 conn = psycopg2.connect(**DB_CONFIG)
->>>>>>> 2f4330a (Reorganize project structure)
+
 cur = conn.cursor()
 
 total = 0
 
 try:
-<<<<<<< HEAD
+
 
     for file_path in FILES:
 
